@@ -1,0 +1,15 @@
+.app{
+  background-color: #F6F6F6;
+  background-color: #DDDDDD;
+  background-color: #FFFFFF;
+  background-color: #F6F7F8;
+  min-height: 100vh;
+}
+
+.debug{
+  border: 2px solid red;
+}
+
+.debug2{
+  border: 2px solid green;
+}
