@@ -1,6 +1,5 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
-import Body from '../components/Body';
 import { Container} from 'react-bootstrap';
 import Stat from '../components/Stat';
 
