@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
     // Delete this later
     const token = createToken(user._id);
 
-    res.status(201).json({ message: 'User registered successfully', email, token });
+    res.status(201).json({ email, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
     // Create a JWT token
     const token = createToken(user._id);
 
-    res.status(200).json({ token });
+    res.status(200).json({ email, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });

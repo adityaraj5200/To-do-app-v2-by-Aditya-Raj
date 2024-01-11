@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import AppLogoBlack from '../components/AppLogoBlack';
 import { Form, Card, Button } from 'react-bootstrap';
 import { useBackendContext } from '../context/BackendContext';
+import { useAuthContext } from '../context/AuthContext';
 
 function Login() {
   const { api_base } = useBackendContext();
+  const { currentUser, token, login, logout } = useAuthContext();
   const [isValidated, setIsValidated] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,12 +22,7 @@ function Login() {
     }
 
     try {
-      // const response = await axios.post(`${api_base}/api/users/login`, {
-      //   email: email,
-      //   password: password,
-      // });
-
-      const response = await fetch(`${api_base}/api/users/login`, {
+      const response = await fetch(`${api_base}/api/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,10 +33,12 @@ function Login() {
         }),
       });
 
-      const { token } = response.data;
+      const json = await response.json();
 
-      // Store the token in local storage
-      localStorage.setItem('token', token);
+      // updating the authContext
+      login(JSON.stringify(json), JSON.stringify(json.token));
+
+      console.log(json);
     } catch (error) {
       console.error('Error during login:', error);
       // Handle login error, display a message to the user, etc.
@@ -47,7 +46,7 @@ function Login() {
   };
 
   return (
-    <div className='d-flex flex-column align-items-center background-white'>
+    <div className='d-flex flex-column align-items-center bg-white'>
       <div className='p-5'>
         <AppLogoBlack />
       </div>

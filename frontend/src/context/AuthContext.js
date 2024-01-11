@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Create the AuthContext
 const AuthContext = createContext();
@@ -9,11 +9,13 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
 
+  
   // Function to set user and token upon successful login
   const login = (userData, authToken) => {
     setCurrentUser(userData);
     setToken(authToken);
     localStorage.setItem('token', authToken);
+    localStorage.setItem('userData', userData);
   };
 
   // Function to log out
@@ -31,8 +33,16 @@ export const AuthProvider = ({ children }) => {
     logout,
   };
 
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('userData'));
+    if (user) {
+      
+    }
+  }, []);
+
+
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 // Create a hook to use the AuthContext
-export const useAuth = () => useContext(AuthContext);
+export const useAuthContext = () => useContext(AuthContext);
