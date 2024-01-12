@@ -1,3 +1,5 @@
+const Todo = require('../models//TodoModel');
+
 const getAllTodos = async (req, res) => {
   try {
     const todos = await Todo.find();
@@ -48,7 +50,6 @@ const deleteTodo = async (req, res) => {
 
 const updateTodo = async (req, res) => {
   try {
-    console.log(req.body);
     const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
     if (!updatedTodo) {
@@ -62,3 +63,5 @@ const updateTodo = async (req, res) => {
     res.status(500).json({ error: 'Error while updating a todo' });
   }
 };
+
+module.exports = { getAllTodos, postTodo, deleteTodo, updateTodo };

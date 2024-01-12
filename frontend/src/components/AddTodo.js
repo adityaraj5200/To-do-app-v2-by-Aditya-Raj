@@ -7,10 +7,12 @@ import { toast } from 'react-toastify';
 
 import { useTodoContext } from '../context/TodoContext';
 import { useBackendContext } from '../context/BackendContext';
+import { useAuthContext } from '../context/AuthContext';
 
 
 function AddTodo() {
   const { api_base } = useBackendContext();
+  const { currentUser } = useAuthContext();
 
   const { addTodo } = useTodoContext();
 
@@ -52,7 +54,10 @@ function AddTodo() {
     try {
       const response = await fetch(`${api_base}/api/todos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${currentUser.token}`
+        },
         body: JSON.stringify(todoData)
       });
 

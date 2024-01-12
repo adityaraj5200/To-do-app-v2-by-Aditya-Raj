@@ -7,28 +7,23 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   // State to manage authentication status and user data
   const [currentUser, setCurrentUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
-
   
   // Function to set user and token upon successful login
-  const login = (userData, authToken) => {
+  const login = (userData) => {
     setCurrentUser(userData);
-    setToken(authToken);
-    localStorage.setItem('token', authToken);
     localStorage.setItem('userData', userData);
   };
 
+  
   // Function to log out
   const logout = () => {
     setCurrentUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
+    localStorage.removeItem('userData');
   };
 
   // Provide the context value to its children
   const contextValue = {
     currentUser,
-    token,
     login,
     logout,
   };
@@ -36,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('userData'));
     if (user) {
-      
+      setCurrentUser(user);
     }
   }, []);
 

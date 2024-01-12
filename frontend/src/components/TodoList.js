@@ -2,18 +2,26 @@ import React, { useEffect, useState } from 'react';
 import Todo from './Todo';
 import { useTodoContext } from '../context/TodoContext';
 import { useBackendContext } from '../context/BackendContext';
+import { useAuthContext } from '../context/AuthContext';
 import { Form } from 'react-bootstrap';
 
 function TodoList() {
   const { todos, setTodos } = useTodoContext();
   const { api_base } = useBackendContext();
+  const { currentUser } = useAuthContext();
   const [sortedTodos, setSortedTodos] = useState([...todos]);
   const [sortOption, setSortOption] = useState('');
 
   const getTodos = async () => {
     try {
-      const response = await fetch(`${api_base}/api/todos`);
+      const response = await fetch(`${api_base}/api/todos`, {
+        headers: {
+          'Authorization': `${currentUser.token}`
+        }
+      });
+      console.log('response', response);
       if (!response.ok) {
+        console.log('here')
         throw new Error('Failed to fetch todos');
       }
       const fetchedTodos = await response.json();
@@ -24,9 +32,11 @@ function TodoList() {
   };
 
   useEffect(() => {
-    getTodos();
+    if (currentUser) {
+      getTodos();
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (sortOption) {

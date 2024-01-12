@@ -3,10 +3,12 @@ import { Card, Modal, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useBackendContext } from '../context/BackendContext';
 import { useTodoContext } from '../context/TodoContext';
+import { useAuthContext } from '../context/AuthContext';
 
 
 function Todo({ todo }) {
   const { api_base } = useBackendContext();
+  const { currentUser } = useAuthContext();
 
   const { updateTodo, deleteTodo } = useTodoContext();
   const [showModal, setShowModal] = useState(false);
@@ -20,6 +22,7 @@ function Todo({ todo }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `${currentUser.token}`
         },
         body: JSON.stringify(updatedProperties),
       });
@@ -48,6 +51,10 @@ function Todo({ todo }) {
       // Make a DELETE request to delete the todo
       const response = await fetch(`${api_base}/api/todos/${todo._id}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${currentUser.token}`
+        },
       });
 
       if (!response.ok) {
@@ -88,7 +95,7 @@ function Todo({ todo }) {
 
 
         <div className='todo-title-description w-100 me-auto debugg'>
-          <div className='todo-tile fs-5'>{todo.text}</div>
+          <div className={`todo-tile fs-5 text-decoration-line-${todo.isComplete ? 'through' : 'none'}`}>{todo.text}</div>
           <div className='todo-description text-muted fs-6'> {todo.description} </div>
         </div>
 

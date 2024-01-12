@@ -1,9 +1,12 @@
 const express = require('express');
 
 const router = express.Router();
-const Todo = require('../models/todoModel');
+
+const { getAllTodos, postTodo, deleteTodo, updateTodo } = require('../controller/todoController');
 
 const { requireAuth } = require('../middleware/requireAuth');
+
+router.use(requireAuth);
 
 router.get('/', requireAuth, getAllTodos);
 

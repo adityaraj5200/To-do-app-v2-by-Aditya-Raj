@@ -1,43 +1,45 @@
-// TodoList.js backup
+// App.js file with protected routes
 
-// TodoList.js backup
+import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import React, { useEffect } from 'react';
-import Todo from './Todo';
-import { useTodoContext } from '../context/TodoContext';
-import { useBackendContext } from '../context/BackendContext';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import MainApp from './pages/MainApp';
+import Profile from './pages/Profile';
+import { TodoProvider } from './context/TodoContext';
+import { BackendProvider } from './context/BackendContext';
+import { AuthProvider, useAuthContext } from './context/AuthContext';
 
-
-function TodoList() {
-  const { todos, setTodos } = useTodoContext();
-  const { api_base } = useBackendContext();
-
-  const getTodos = async () => {
-    try {
-      const response = await fetch(`${api_base}/api/todos`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch todos');
-      }
-      const fetchedTodos = await response.json();
-      setTodos(fetchedTodos);
-    } catch (error) {
-      console.error('Error while fetching todos:', error);
-    }
-  };
-
-  useEffect(() => {
-    getTodos();
-    // eslint-disable-next-line
-  }, []);
-
-
+function App() {
+  const { currentUser } = useAuthContext();
   return (
-    <div>
-      {todos.map((todo) => (
-        <Todo key={todo._id} todo={todo} />
-      ))}
+    <div className='app '>
+      <TodoProvider>
+        <BackendProvider>
+          <AuthProvider>
+
+            {/* Main content below */}
+            <BrowserRouter>
+              <Routes>
+                <Route path='/' element={currentUser ? <MainApp /> : <Navigate to='/login' />} />
+                <Route path='/login' element={!currentUser ? <Login /> : <Navigate to='/' />} />
+                <Route path='/signup' element={!currentUser ? <Signup /> : <Navigate to='/' />} />
+                <Route path='/profile' element={!currentUser ? <Profile /> : <Navigate to='/' />} />
+              </Routes>
+            </BrowserRouter>
+            {/* Main content above */}
+
+          </AuthProvider>
+        </BackendProvider>
+      </TodoProvider>
+
+      <ToastContainer />
+
     </div>
   );
 }
 
-export default TodoList;
+export default App;
