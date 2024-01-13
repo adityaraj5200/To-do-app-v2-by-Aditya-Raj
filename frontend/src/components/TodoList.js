@@ -11,29 +11,42 @@ function TodoList() {
   const { currentUser } = useAuthContext();
   const [sortedTodos, setSortedTodos] = useState([...todos]);
   const [sortOption, setSortOption] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const getTodos = async () => {
+    const dummyTodos = [
+      { _id: 1, text: 'dummy 1', isComplete: true, isImportant: true },
+      { _id: 2, text: 'dummy 2', isComplete: false, isImportant: true },
+      { _id: 3, text: 'dummy 3', isComplete: true, isImportant: false }
+    ]
     try {
       const response = await fetch(`${api_base}/api/todos`, {
         headers: {
           'Authorization': `${currentUser.token}`
         }
       });
-      console.log('response', response);
+
       if (!response.ok) {
-        console.log('here')
-        throw new Error('Failed to fetch todos');
+        throw new Error('Response not ok');
       }
+
       const fetchedTodos = await response.json();
       setTodos(fetchedTodos);
+      // setTodos(dummyTodos);
     } catch (error) {
-      console.error('Error while fetching todos:', error);
+      console.error('Error while fetching todos from getTodos():', error);
+    } finally {
+      console.log('changing loading to false');
+      setLoading(false); // Set loading to false regardless of success or error
     }
   };
 
   useEffect(() => {
     if (currentUser) {
-      getTodos();
+      const delayFn = async () => {
+        await getTodos();
+      };
+      delayFn();
     }
     // eslint-disable-next-line
   }, [currentUser]);
@@ -63,6 +76,17 @@ function TodoList() {
     setSortOption(option);
   };
 
+  if (loading) {
+    return <p>Loading...</p>; // Display a loading message while fetching todos
+  }
+
+  // return (
+  //   <div className="">
+  //     <p>TodoList</p>
+  //   </div>
+  // )
+
+  //eslint-disable-next-line
   return (
     <div>
       {/* Use Form.Select for sorting options with the w-auto class */}

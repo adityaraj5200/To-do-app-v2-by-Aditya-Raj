@@ -7,19 +7,36 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   // State to manage authentication status and user data
   const [currentUser, setCurrentUser] = useState(null);
-  
+
   // Function to set user and token upon successful login
   const login = (userData) => {
-    setCurrentUser(userData);
-    localStorage.setItem('userData', userData);
+    return new Promise((resolve, reject) => {
+      try {
+        setCurrentUser(userData);
+        localStorage.setItem('userData', userData);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
   };
 
-  
   // Function to log out
   const logout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem('userData');
+    return new Promise((resolve, reject) => {
+      try {
+        console.log('Before setCurrentUser and localStorage.removeItem');
+        setCurrentUser(null);
+        localStorage.removeItem('userData');
+        console.log('After setCurrentUser and localStorage.removeItem');
+        resolve();
+      } catch (error) {
+        console.error('Error in logout', error);
+        reject(error);
+      }
+    });
   };
+
 
   // Provide the context value to its children
   const contextValue = {

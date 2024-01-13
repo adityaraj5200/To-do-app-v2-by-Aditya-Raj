@@ -3,15 +3,17 @@ import AppLogoBlack from '../components/AppLogoBlack';
 import { Form, Card, Button } from 'react-bootstrap';
 import { useBackendContext } from '../context/BackendContext';
 import { useAuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const { api_base } = useBackendContext();
-  const { currentUser, token, login, logout } = useAuthContext();
+  const { login } = useAuthContext();
   const [isValidated, setIsValidated] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('adityaraj5200@gmail.com');
+  const [password, setPassword] = useState('password');
+  const navigate = useNavigate(); // Create a navigate function
 
-  const handleSubmit = async (event) => {
+  const loginClickHandler = async (event) => {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -36,9 +38,10 @@ function Login() {
       const json = await response.json();
 
       // updating the authContext
-      login(JSON.stringify(json), JSON.stringify(json.token));
+      await login(JSON.stringify(json));
+      navigate('/'); // Navigate to '/' after login
 
-      console.log(json);
+      // console.log(json);
     } catch (error) {
       console.error('Error during login:', error);
       // Handle login error, display a message to the user, etc.
@@ -54,10 +57,11 @@ function Login() {
 
       <Card style={{ width: '350px', backgroundColor: '#F6F7F8' }}>
         <Card.Body>
-          <Form noValidate validated={isValidated} onSubmit={handleSubmit}>
+          <Form noValidate validated={isValidated} onSubmit={loginClickHandler}>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
+                autoComplete='username'
                 required
                 type='email'
                 placeholder="name@example.com"
@@ -70,6 +74,7 @@ function Login() {
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
+                autoComplete='current-password'
                 required
                 type='password'
                 placeholder="Enter your password"

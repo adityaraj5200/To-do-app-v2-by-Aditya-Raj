@@ -1,8 +1,23 @@
 import React from 'react';
-import { Container, Nav, Navbar, Badge } from 'react-bootstrap';
+import { Container, Nav, Navbar, Badge, Button } from 'react-bootstrap';
 import AppLogo from './AppLogo';
+import { useAuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-function NavBar() {
+
+function  NavBar() {
+  const { logout, currentUser } = useAuthContext();
+  const navigate = useNavigate(); // Create a navigate function
+
+  const logoutHandler = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error in logoutHandler in NavBar', error);
+    }
+  };
+
   return (
     <Navbar expand="md" bg="primary" data-bs-theme="dark">
       <Container fluid>
@@ -16,13 +31,13 @@ function NavBar() {
             <Nav.Link href="#completedtasks">Completed Tasks<Badge pill bg="secondary">10</Badge></Nav.Link>
             <Nav.Link href="#incompletedtasks">Incompleted Tasks<Badge pill bg="secondary">9</Badge></Nav.Link>
           </Nav>
-          <Nav>
+          <Nav className='me-2'>
             <Navbar.Text>
-              Signed in as: <a href="#login">FirstName LastName</a>
-              {/* User Icon below */}
+              Signed in as: <a href="#login">{currentUser.email}</a>
               <i style={{ cursor: 'pointer' }} className="bi bi-person-circle ms-2 cursor-pointer"></i>
             </Navbar.Text>
           </Nav>
+          <Button variant="danger" onClick={logoutHandler}>Logout</Button>
         </Navbar.Collapse>
       </Container>
     </Navbar>
